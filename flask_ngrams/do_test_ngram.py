@@ -13,7 +13,7 @@ from redis import StrictRedis, ConnectionPool
 import pymysql.cursors
 pool = ConnectionPool(host='kika-backend-test1.intranet.com', port=6379, db=2, password='',decode_responses=True)
 redis = StrictRedis(connection_pool=pool)
-connection = pymysql.connect(host='35.163.187.50', port=3306, user='rwuser', passwd='xinmei365',db='kika_online',charset='utf8', cursorclass=pymysql.cursors.DictCursor)
+connection = pymysql.connect(host='172.31.20.140', port=3306, user='rwuser', passwd='xinmei365',db='kika_online',charset='utf8', cursorclass=pymysql.cursors.DictCursor)
 #languages = ['ar','es_US','ms_MY','ru','en_us']
 languages = ['ar','en_us']
 stopword={'en_us':['.',',','!','?'],'ar':['.']}
