@@ -1,7 +1,7 @@
 import time
 import os
 import model_for_test_lstm
-import tensorflow as tf
+#import tensorflow as tf
 import json
 from collections import OrderedDict
 import flask
