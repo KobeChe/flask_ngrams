@@ -34,23 +34,19 @@ for language in languages:
     model = model_for_test_lstm.LSTMModel(language+'/'+language+'.pb',language)
     lstm_models[language] = model
 sess = tf.Session()
-
 user_state = {}
-
 app = Flask(__name__)
-
 def getState(userid):
     if userid not in user_state:
         lm_output_state = np.zeros([2, 2, 1, 400], dtype=np.float32)
-        kc_output_state = np.zeros([2, 2, 1, 400], dtype=np.float32)
         #print(lm_output_state,kc_output_state)
-        user_state[userid] = (lm_output_state,kc_output_state)
-        return (lm_output_state,kc_output_state)
+        user_state[userid] = lm_output_state
+        return lm_output_state
     else:
         return user_state[userid]
 
 def updateState(user_id,lm_output_state,kc_output_state):
-    user_state[user_id] = (lm_output_state,kc_output_state)
+    user_state[user_id] = lm_output_state
     return
 def unigram(tree,input_letters):
     uni_result = {}
@@ -67,10 +63,10 @@ def bigram(bi_dict,last_word):
         bi_result_list.append(key)
     return bi_result_list
 
-def lstm(model,user_id,last_word,input_letters,k,tag_first):
-    lm_output_state,kc_output_state = getState(user_id)
+def lstm(model,user_id,last_word,input_letters,k):
+    lm_output_state = getState(user_id)
     #print(type(lm_output_state),type(kc_output_state))
-    predict_words,predict_words_list,lm_output_state,kc_output_state = model.predict_pb(sess,last_word,input_letters,lm_output_state,kc_output_state,k,tag_first)
+    predict_words,predict_words_list,lm_output_state,kc_output_state = model.predict_pb(sess,last_word,input_letters,lm_output_state,k)
     updateState(user_id,lm_output_state,kc_output_state)
     return predict_words_list
 
@@ -121,12 +117,11 @@ def predict():
     '''
     AuthorizeToken=flask.request.values.get('AuthorizeToken')
     language = flask.request.values.get('lan')
-    tag_first = flask.request.values.get('tag_first')
     user_id = flask.request.values.get('user_id')
     last_word = flask.request.values.get('last_word')
     input_letters = flask.request.values.get('input_letters')
     topk = flask.request.values.get('top_k')
-    logging.info('tag_first:%s user_id:%s last_word%s input_letters:%s'%(tag_first,user_id,last_word,input_letters))
+    logging.info(' user_id:%s last_word%s input_letters:%s'%(user_id,last_word,input_letters))
     error_message=error_detection(lan=languages,user_id=user_id,last_word=last_word,input_letters=input_letters,
                                   top_k=topk,AuthorizeToken=AuthorizeToken)
     topk=int(topk)
@@ -134,7 +129,7 @@ def predict():
         return error_message
     try:
         model = lstm_models.get(language, None)
-        lstm_result = lstm(model,user_id,last_word,input_letters,topk,tag_first)
+        lstm_result = lstm(model,user_id,last_word,input_letters,topk)
         return json.dumps({"status":"success","candidates":lstm_result})
     except:
         return json.dumps({"status":"fail","errCode":-2,"errMessage":"inference error"})

@@ -110,11 +110,12 @@ class LSTMModel(object):
         # words_ids = self.words2ids(words_array)
         # letters_ids = self.letters2ids(letters)
         return new_words_array, labels_array
-    def predict_pb(self,sess,last_word,input_letters,lm_state_out,kc_state_out,k,tag_first):
+    def predict_pb(self,sess,last_word,input_letters,lm_state_out,k):
         #print("kc_output_state",type(kc_state_out))
         letters_ids = self.letters2ids(input_letters)  # 输出单词字母转id
+        print(letters_ids)
         # prediction_made+=1
-        input_x = self.word2id('<unk>')['id']
+        input_letter_idx = self.word2id(self.start_str)['id']
         # if last_word is not None:  # 去掉起始位
         #     input_x = self.word2id(last_word)['id']
             #input_x = np.array([[input_x]], dtype=np.int32)
@@ -127,34 +128,38 @@ class LSTMModel(object):
 
         words_out = []
         probs_out = []
-
+        kc_state_out=None
         #使用语言模型，此时
         #当前输入为第一个单词，没输入完
         # if len(last_word)==0:
         #     feed_values = {self.lm_input_name: [[input_x]]}
         #     lm_state_out = sess.run([self.lm_state_out_name], feed_dict=feed_values)[0]
         #elif len(last_word)>0 and len(input_letters) == 0:
+        feed_values = {self.kc_top_k_name: k, self.key_length: [1]}
         if len(last_word) > 0:
             #假如前面有词，现在需要输入2个，一个是前面的词，一个是之前的LM_STATE
             # Phase I: read contexts.
             input_x = self.word2id(last_word)['id']
-            feed_values = {self.lm_input_name: [[input_x]]}
-            feed_values[self.lm_state_in_name] = lm_state_out
-            lm_state_out = sess.run([self.lm_state_out_name], feed_dict=feed_values)[0]
-        # Phase II: read letters, predict by feed the letters one-by-one.
-        feed_values = {self.kc_input_name: [[letters_ids[-1]]],
-                       self.kc_top_k_name: k, self.key_length: [1]}
-        if len(input_letters) == 0:
+            feed_value = {self.lm_input_name: [[input_x]]}
+            feed_value[self.lm_state_in_name] = lm_state_out
+            lm_state_out = sess.run([self.lm_state_out_name], feed_dict=feed_value)[0]
             feed_values[self.kc_lm_state_in_name] = lm_state_out
-            # Use language model's final state to letter model's initial state when letters haven't been feed.
+            feed_values[self.kc_input_name]=[[input_letter_idx]]
+            probabilities, top_k_predictions = sess.run(
+                [self.kc_output_name, self.kc_top_k_prediction_name],
+                feed_dict=feed_values)
+        # Phase II: read letters, predict by feed the letters one-by-one.
+        #如果input lette等于0
         else:
-            if tag_first=='1':
-                feed_values[self.kc_state_in_name] = lm_state_out
-            else:
-                feed_values[self.kc_state_in_name] = kc_state_out
+            for i in range(len(letters_ids)):
+                feed_values[self.kc_input_name]=[[letters_ids[i]]]
+                if i==0:
+                    feed_values[self.kc_state_in_name] = lm_state_out
+                else:
+                    feed_values[self.kc_state_in_name] = kc_state_out
             # Use letter model's final state to letter model's initial state when feed the letters one-by-one.
-        probabilities, top_k_predictions, kc_state_out = sess.run([self.kc_output_name, self.kc_top_k_prediction_name,
-                                                                         self.kc_state_out_name], feed_dict=feed_values)
+                probabilities, top_k_predictions, kc_state_out = sess.run([self.kc_output_name, self.kc_top_k_prediction_name,
+                                                                                 self.kc_state_out_name], feed_dict=feed_values)
         predict_words = {}
         predict_words_list=[]
         i = 0
