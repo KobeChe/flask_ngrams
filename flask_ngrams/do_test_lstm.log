@@ -1,0 +1,33 @@
+2020-12-25 11:54:59,201 - /Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/tensorflow/python/util/deprecation_wrapper.py[line:119] - WARNING: From /Users/xm20200924/Documents/code/online/test_flask_rnn_online/flask_ngrams/model_for_test_lstm.py:59: The name tf.GraphDef is deprecated. Please use tf.compat.v1.GraphDef instead.
+
+2020-12-25 11:54:59,779 - /Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/tensorflow/python/util/deprecation_wrapper.py[line:119] - WARNING: From /Users/xm20200924/Documents/code/online/test_flask_rnn_online/flask_ngrams/do_test_lstm.py:36: The name tf.Session is deprecated. Please use tf.compat.v1.Session instead.
+
+2020-12-25 11:55:02,413 - /Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/werkzeug/_internal.py[line:113] - INFO:  * Running on http://0.0.0.0:5003/ (Press CTRL+C to quit)
+2020-12-25 11:55:45,231 - /Users/xm20200924/Documents/code/online/test_flask_rnn_online/flask_ngrams/do_test_lstm.py[line:129] - INFO: tag_first:0 user_id:2 last_word input_letters:l
+2020-12-25 11:55:45,231 - /Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/flask/app.py[line:1892] - ERROR: Exception on /predict [GET]
+Traceback (most recent call last):
+  File "/Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/xm20200924/Documents/code/online/test_flask_rnn_online/flask_ngrams/do_test_lstm.py", line 131, in predict
+    top_k=topk,AuthorizeToken=AuthorizeToken)
+  File "/Users/xm20200924/Documents/code/online/test_flask_rnn_online/flask_ngrams/do_test_lstm.py", line 111, in error_detection
+    if len(top_k)==0:
+TypeError: object of type 'int' has no len()
+2020-12-25 11:55:45,234 - /Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/werkzeug/_internal.py[line:113] - INFO: 127.0.0.1 - - [25/Dec/2020 11:55:45] "[35m[1mGET /predict?AuthorizeToken=asdfzxcv&user_id=2&last_word=&input_letters=l&top_k=5&lan=en_us&tag_first=0 HTTP/1.1[0m" 500 -
+2020-12-25 11:57:29,664 - /Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/tensorflow/python/util/deprecation_wrapper.py[line:119] - WARNING: From /Users/xm20200924/Documents/code/online/test_flask_rnn_online/flask_ngrams/model_for_test_lstm.py:59: The name tf.GraphDef is deprecated. Please use tf.compat.v1.GraphDef instead.
+
+2020-12-25 11:57:30,271 - /Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/tensorflow/python/util/deprecation_wrapper.py[line:119] - WARNING: From /Users/xm20200924/Documents/code/online/test_flask_rnn_online/flask_ngrams/do_test_lstm.py:36: The name tf.Session is deprecated. Please use tf.compat.v1.Session instead.
+
+2020-12-25 11:57:30,285 - /Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/werkzeug/_internal.py[line:113] - INFO:  * Running on http://0.0.0.0:5003/ (Press CTRL+C to quit)
+2020-12-25 11:57:33,673 - /Users/xm20200924/Documents/code/online/test_flask_rnn_online/flask_ngrams/do_test_lstm.py[line:129] - INFO: tag_first:0 user_id:2 last_word input_letters:l
+2020-12-25 11:57:34,761 - /Users/xm20200924/anaconda3/envs/env_tf1.15/lib/python3.6/site-packages/werkzeug/_internal.py[line:113] - INFO: 127.0.0.1 - - [25/Dec/2020 11:57:34] "[37mGET /predict?AuthorizeToken=asdfzxcv&user_id=2&last_word=&input_letters=l&top_k=5&lan=en_us&tag_first=0 HTTP/1.1[0m" 200 -

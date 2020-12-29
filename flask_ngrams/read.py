@@ -1,4 +1,3 @@
-import pymysql.cursors
 def FromMySql(conn,sql):
     try:
         cursor=conn.cursor()
